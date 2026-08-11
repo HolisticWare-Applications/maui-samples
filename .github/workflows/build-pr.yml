@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-15]
+        os: [windows-latest, macos-26]
 
     runs-on: ${{ matrix.os }}
 
@@ -24,16 +24,18 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: |
-          9.0.x
           10.0.x
+          11.0.100-preview.7.26381.103
         include-prerelease: true
         dotnet-quality: 'preview'
 
     - name: Install .NET MAUI Workload
-      run: dotnet workload install maui
+      run: |
+        dotnet workload config --update-mode manifests
+        dotnet workload install maui
 
     - name: Select Xcode Version
-      run: sudo xcode-select -s /Applications/Xcode_16.4.app
+      run: sudo xcode-select -s /Applications/Xcode_26.6.app
       if: runner.os == 'macOS'
 
     - name: Find and build changed projects
